@@ -14,26 +14,33 @@ sub get_hooks {
     $conf{output} or die "Please specify output (e.g. ".
         "ArrayWithLimits for Log::Dispatch::ArrayWithLimits)";
 
+    require Log::Dispatch;
     my $mod = "Log::Dispatch::$conf{output}";
     (my $mod_pm = "$mod.pm") =~ s!::!/!g;
     require $mod_pm;
 
     return {
-        create_log_routine => [
+        create_logml_routine => [
             __PACKAGE__, 50,
             sub {
                 my %args = @_;
 
                 my $logger = sub {
-                    my ($ctx, $msg) = @_;
+                    my ($ctx, $level, $msg) = @_;
+
+                    return if $level > $Log::ger::Current_Level;
 
                     # we can use init_args to store per-target stuffs
-                    $args{init_args}{_ldo} ||= $mod->new(
-                        min_level => Log::ger::Util::string_level(
-                            $Log::ger::Current_Level),
-                        %{ $conf{args} || {} },
+                    $args{init_args}{_ld} ||= Log::Dispatch->new(
+                        outputs => [
+                            [
+                                $conf{output},
+                                min_level => 'warning',
+                                %{ $conf{args} || {} },
+                            ],
+                        ],
                     );
-                    $args{init_args}{_ldo}->log_message(message => $msg);
+                    $args{init_args}{_ld}->warning($msg);
                 };
                 [$logger];
             }],
