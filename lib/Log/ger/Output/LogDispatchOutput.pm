@@ -21,9 +21,10 @@ sub get_hooks {
 
     return {
         create_logml_routine => [
-            __PACKAGE__, 50,
-            sub {
-                my %args = @_;
+            __PACKAGE__, # key
+            50,          # priority
+            sub {        # hook
+                my %hook_args = @_;
 
                 my $logger = sub {
                     my ($ctx, $level, $msg) = @_;
@@ -31,7 +32,7 @@ sub get_hooks {
                     return if $level > $Log::ger::Current_Level;
 
                     # we can use init_args to store per-target stuffs
-                    $args{init_args}{_ld} ||= Log::Dispatch->new(
+                    $hook_args{init_args}{_ld} ||= Log::Dispatch->new(
                         outputs => [
                             [
                                 $conf{output},
@@ -40,7 +41,7 @@ sub get_hooks {
                             ],
                         ],
                     );
-                    $args{init_args}{_ld}->warning($msg);
+                    $hook_args{init_args}{_ld}->warning($msg);
                 };
                 [$logger];
             }],
