@@ -1,6 +1,8 @@
 package Log::ger::Output::LogDispatchOutput;
 
+# AUTHORITY
 # DATE
+# DIST
 # VERSION
 
 use strict;
@@ -24,7 +26,7 @@ sub get_hooks {
             __PACKAGE__, # key
             50,          # priority
             sub {        # hook
-                my %hook_args = @_;
+                my %hook_args = @_; # see Log::ger::Manual::Internals/"Arguments passed to hook"
 
                 my $logger = sub {
                     my ($ctx, $level, $msg) = @_;
