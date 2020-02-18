@@ -1,3 +1,9 @@
+0.003   2020-02-18  Released-By: PERLANCAR; Urgency: medium
+
+	- [internal] Allow passing Log::Dispatch::Output object directly
+	  via '_output' configuration.
+
+
 0.002   2017-08-03  Released-By: PERLANCAR
 
 	- [Bugfix] Instantiate Log::Dispatch instead of Log::Dispatch
