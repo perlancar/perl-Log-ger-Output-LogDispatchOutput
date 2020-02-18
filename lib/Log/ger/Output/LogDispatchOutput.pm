@@ -36,11 +36,12 @@ sub get_hooks {
                     # we can use init_args to store per-target stuffs
                     $hook_args{init_args}{_ld} ||= Log::Dispatch->new(
                         outputs => [
-                            [
-                                $conf{output},
-                                min_level => 'warning',
-                                %{ $conf{args} || {} },
-                            ],
+                            $conf{_output} ? $conf{_output} :
+                                [
+                                    $conf{output},
+                                    min_level => 'warning',
+                                    %{ $conf{args} || {} },
+                                ],
                         ],
                     );
                     $hook_args{init_args}{_ld}->warning($msg);
