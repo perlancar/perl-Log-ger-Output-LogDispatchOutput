@@ -29,7 +29,7 @@ sub get_hooks {
             # for less severe levels.
             9,           # priority
             sub {        # hook
-                my %hook_args = @_;
+                my %hook_args = @_; # see Log::ger::Manual::Internals/"Arguments passed to hook"
 
                 my $outputter = sub {
                     my ($per_target_conf, $msg, $per_msg_conf) = @_;
@@ -40,11 +40,12 @@ sub get_hooks {
                     # we can use per-target conf to store per-target stuffs
                     $hook_args{per_target_conf}{_ld} ||= Log::Dispatch->new(
                         outputs => [
-                            [
-                                $plugin_conf{output},
-                                min_level => 'warning',
-                                %{ $plugin_conf{args} || {} },
-                            ],
+                            $plugin_conf{_output} ? $plugin_conf{_output} :
+                                [
+                                    $plugin_conf{output},
+                                    min_level => 'warning',
+                                    %{ $plugin_conf{args} || {} },
+                                ],
                         ],
                     );
                     $hook_args{per_target_conf}{_ld}->warning($msg);
